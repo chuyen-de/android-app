@@ -1,5 +1,7 @@
 package com.example.baobang.chuyendedemo.ui.login;
 
+import android.text.TextUtils;
+
 import com.example.baobang.chuyendedemo.db.data.ApiUtils;
 import com.example.baobang.chuyendedemo.db.data.SOService;
 import com.example.baobang.chuyendedemo.db.network.model.LoginRequest;
@@ -26,11 +28,11 @@ public class LoginPresenter implements LoginMvpPresenter {
     @Override
     public void login(String username, String password) {
 
-        if(username.length() == 0){
+        if(TextUtils.isEmpty(username)){
             loginView.showMessage("Nhập vào tên đăng nhập");
             return;
         }
-        if(password.length() == 0){
+        if(TextUtils.isEmpty(password)){
             loginView.showMessage("Nhập vào tên đăng nhập");
             return;
         }
