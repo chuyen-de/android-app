@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ChuyenDeDemo</string>
+
+    <string name="login">Đăng nhập</string>
+    <string name="user_name">Tên đăng nhập</string>
+    <string name="password">Mật khẩu</string>
+</resources>
