@@ -1,4 +1,4 @@
-package com.example.baobang.chuyendedemo.course_list.adapter;
+package com.example.baobang.chuyendedemo.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -23,9 +23,11 @@ public class MyPagerAdapter extends FragmentPagerAdapter{
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return new CourseListFragment();
+                CourseListFragment courseListFragment= new CourseListFragment();
+                return courseListFragment;
             case 1:
-                return new MyCourseFragment();
+                MyCourseFragment myCourseFragment = new MyCourseFragment();
+                return myCourseFragment;
             default:
                 return null;
         }

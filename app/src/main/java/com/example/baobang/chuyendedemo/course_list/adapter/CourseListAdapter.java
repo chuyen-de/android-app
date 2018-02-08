@@ -32,9 +32,8 @@ public class CourseListAdapter extends RecyclerView.Adapter<CourseListAdapter.Co
 
     @Override
     public void onBindViewHolder(CourseHolder holder, int position) {
-        CourseHolder courseHolder = (CourseHolder) holder;
         Course course = this.courseList.get(position);
-        courseHolder.bindView(course);
+        holder.bindView(course);
     }
 
     public void setCourseList(ArrayList<Course> courseList) {

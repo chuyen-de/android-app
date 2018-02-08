@@ -2,7 +2,7 @@ package com.example.baobang.chuyendedemo.db.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by huuduc on 29/01/2018.
@@ -13,7 +13,7 @@ public class ListUserResponse {
     int status;
 
     @SerializedName("results")
-    List<User> user;
+    ArrayList<User> user;
 
     public int getStatus() {
         return status;
@@ -23,11 +23,11 @@ public class ListUserResponse {
         this.status = status;
     }
 
-    public List<User> getUser() {
+    public ArrayList<User> getUser() {
         return user;
     }
 
-    public void setUser(List<User> user) {
+    public void setUser(ArrayList<User> user) {
         this.user = user;
     }
 }

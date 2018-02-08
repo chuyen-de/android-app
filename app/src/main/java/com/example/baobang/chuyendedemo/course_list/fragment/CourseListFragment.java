@@ -1,5 +1,6 @@
 package com.example.baobang.chuyendedemo.course_list.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,19 +11,28 @@ import android.view.ViewGroup;
 
 import com.example.baobang.chuyendedemo.R;
 import com.example.baobang.chuyendedemo.course_list.adapter.CourseListAdapter;
+import com.example.baobang.chuyendedemo.db.data.ApiUtils;
+import com.example.baobang.chuyendedemo.db.data.SOService;
 import com.example.baobang.chuyendedemo.db.network.model.Course;
+import com.example.baobang.chuyendedemo.db.network.model.ListCourseResponse;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by huuduc on 01/02/2018.
  */
 
-public class CourseListFragment extends Fragment {
+public class CourseListFragment extends Fragment{
 
     private ArrayList<Course> courseList;
     private RecyclerView rvListCourse;
     private CourseListAdapter courseListAdapter;
+    private SOService mService;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,12 +47,28 @@ public class CourseListFragment extends Fragment {
         rvListCourse = view.findViewById(R.id.rvListCourse);
 
         courseListAdapter = new CourseListAdapter();
-        courseList = new ArrayList<>();
-        generateDummyData();
+        mService = ApiUtils.getSOService();
 
-        courseListAdapter.setCourseList(courseList);
-        rvListCourse.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
-        rvListCourse.setAdapter(courseListAdapter);
+        loadListCourse(this.getContext());
+
+    }
+
+    private void loadListCourse(final Context context) {
+        courseList = new ArrayList<>();
+        mService.listAllCourse().enqueue(new Callback<ListCourseResponse>() {
+            @Override
+            public void onResponse(Call<ListCourseResponse> call, Response<ListCourseResponse> response) {
+                courseList = (ArrayList<Course>) response.body().getCourseList();
+                courseListAdapter.setCourseList(courseList);
+                rvListCourse.setLayoutManager(new GridLayoutManager(context, 2));
+                rvListCourse.setAdapter(courseListAdapter);
+            }
+
+            @Override
+            public void onFailure(Call<ListCourseResponse> call, Throwable t) {
+
+            }
+        });
     }
 
     public void generateDummyData() {
@@ -64,4 +90,5 @@ public class CourseListFragment extends Fragment {
         courseList.add(course7);
         courseList.add(course8);
     }
+
 }
