@@ -1,12 +1,16 @@
 package com.example.baobang.chuyendedemo;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.baobang.chuyendedemo.constant.Constant;
 import com.example.baobang.chuyendedemo.adapter.MyPagerAdapter;
@@ -15,6 +19,7 @@ import com.example.baobang.chuyendedemo.db.data.SOService;
 import com.example.baobang.chuyendedemo.db.network.model.ListUserResponse;
 import com.example.baobang.chuyendedemo.db.network.model.User;
 import com.example.baobang.chuyendedemo.db.network.model.UserResponse;
+import com.example.baobang.chuyendedemo.login.view.LoginActivity;
 import com.google.gson.Gson;
 
 import retrofit2.Call;
@@ -26,6 +31,8 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private SOService mService;
+
+    private User user = null;
 //    private FragmentCommunicator communicator;
 
 
@@ -50,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String userString = preferences.getString(Constant.USER, "");
         if (!TextUtils.isEmpty(userString)){
-            User user = gson.fromJson(userString, User.class);
+             user = gson.fromJson(userString, User.class);
 //            communicator.passData(user.getId());
         }
     }
@@ -84,17 +91,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadUser() {
-        mService.getUser("5a6f3c497745e90014c6c101").enqueue(new Callback<UserResponse>() {
-            @Override
-            public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                // put stuff here
-            }
+       if(user != null){
+           mService.getUser(user.getId()).enqueue(new Callback<UserResponse>() {
+               @Override
+               public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
+                   // put stuff here
+               }
 
-            @Override
-            public void onFailure(Call<UserResponse> call, Throwable t) {
+               @Override
+               public void onFailure(Call<UserResponse> call, Throwable t) {
 
-            }
-        });
+               }
+           });
+       }
     }
 
     private void loadListUser() {
@@ -111,7 +120,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private void loadListCourse() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                    logOut();
+                break;
+
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        SharedPreferences preferences = getSharedPreferences(Constant.KEY_PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constant.USER, "");
+        editor.apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
+    //    private void loadListCourse() {
 //        mService.listAllCourse().enqueue(new Callback<ListCourseResponse>() {
 //            @Override
 //            public void onResponse(Call<ListCourseResponse> call, Response<ListCourseResponse> response) {

@@ -42,10 +42,20 @@ public class LoginActivity extends AppCompatActivity implements ViewLoginListene
 
 
         if (!TextUtils.isEmpty(userString)){
-            Intent intent = new Intent(this, MainActivity.class);
-//            User user = gson.fromJson(userString, User.class);
-            intent.putExtra(Constant.USER, userString);
-            startActivity(intent);
+
+            User user = gson.fromJson(userString, User.class);
+            finish();
+            if (user.getRole() == 0){
+                Intent mainInter = new Intent(this, MainActivity.class);
+                mainInter.putExtra(Constant.USER, userString);
+                startActivity(mainInter);
+
+            }else if (user.getRole() == 1){
+                Intent teacherIntent = new Intent(this, TeacherActivity.class);
+                teacherIntent.putExtra(Constant.USER, userString);
+                startActivity(teacherIntent);
+            }
+
         }
 
     }
@@ -62,18 +72,20 @@ public class LoginActivity extends AppCompatActivity implements ViewLoginListene
     public void onLoginSuccess(User user) {
 
         SharedPreferences preferences = getSharedPreferences(Constant.KEY_PREFERENCES, Context.MODE_PRIVATE);
+
         Gson gson = new Gson();
         String json = gson.toJson(user);
 
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(Constant.USER, json);
-        editor.commit();
+        editor.apply();
+        finish();
 
         if (user.getRole() == 0){
             Intent mainInter = new Intent(this, MainActivity.class);
             mainInter.putExtra(Constant.USER, json);
             startActivity(mainInter);
-            finish();
+
         }else if (user.getRole() == 1){
             Intent teacherIntent = new Intent(this, TeacherActivity.class);
             teacherIntent.putExtra(Constant.USER, json);

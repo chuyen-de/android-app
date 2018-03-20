@@ -1,16 +1,23 @@
 package com.example.baobang.chuyendedemo;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.baobang.chuyendedemo.adapter.TeacherAdapter;
+import com.example.baobang.chuyendedemo.constant.Constant;
 import com.example.baobang.chuyendedemo.db.data.ApiUtils;
 import com.example.baobang.chuyendedemo.db.data.SOService;
 import com.example.baobang.chuyendedemo.db.network.model.ListUserResponse;
 import com.example.baobang.chuyendedemo.db.network.model.User;
+import com.example.baobang.chuyendedemo.login.view.LoginActivity;
 
 import java.util.ArrayList;
 
@@ -71,24 +78,38 @@ public class TeacherActivity extends AppCompatActivity {
         });
     }
 
-    //Boolean gender, ArrayList<Course> course, String _id, Integer role, String name, String email, String birthday
-    private void generateDummyData() {
-        User user1 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-        User user2 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-        User user3 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-        User user4 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-        User user5 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-        User user6 = new User(false, null, "123", 1, "adsa", "asdasd", "asdasd");
-
-        listStudent.add(user1);
-        listStudent.add(user2);
-        listStudent.add(user3);
-        listStudent.add(user4);
-        listStudent.add(user5);
-        listStudent.add(user6);
-    }
-
     private void addEvents() {
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.logout:
+                logOut();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void logOut() {
+        SharedPreferences preferences = getSharedPreferences(Constant.KEY_PREFERENCES, Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constant.USER, "");
+        editor.apply();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
